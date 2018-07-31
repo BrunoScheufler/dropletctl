@@ -98,6 +98,20 @@ async function selectSpecs(region: IRegion, images: IImage[], keys: ISSHKey[], s
 		message: 'Select your SSH keys to be added to the droplet'
 	};
 
+	const features = ['backups', 'ipv6', 'private_networking', 'monitoring'];
+	const prettifiedFeatures = [
+		`Automated backups ${chalk.gray('backup')}`,
+		`IPv6 ${chalk.gray('ipv6')}`,
+		`Private networking ${chalk.gray('private_networking')}`,
+		`Monitoring ${chalk.gray('monitoring')}`
+	];
+	const selectFeaturesQuestion = {
+		type: 'checkbox',
+		name: 'features_raw',
+		choices: prettifiedFeatures,
+		message: 'Select additional droplet features'
+	};
+
 	const selectNameQuestion = {
 		type: 'input',
 		name: 'name',
@@ -106,19 +120,29 @@ async function selectSpecs(region: IRegion, images: IImage[], keys: ISSHKey[], s
 	};
 
 	interface ISpecs {
+		// user input to be transformed into droplet details
 		image_snapshot: string;
 		pretty_keys: string[];
+		features_raw: string[];
 
+		// default droplet details
 		size: string;
 		image: string;
 		name: string;
 		ssh_keys: string[];
+
+		// optional droplet features
+		backups?: boolean;
+		ipv6?: boolean;
+		private_networking?: boolean;
+		monitoring?: boolean;
 	}
 
-	const { pretty_keys, image_snapshot, ...specs } = await inquirer.prompt<ISpecs>([
+	const { pretty_keys, image_snapshot, features_raw, ...specs } = await inquirer.prompt<ISpecs>([
 		selectSizeQuestion,
 		selectImageQuestion,
 		selectKeysQuestion,
+		selectFeaturesQuestion,
 		selectNameQuestion
 	]);
 
@@ -129,6 +153,25 @@ async function selectSpecs(region: IRegion, images: IImage[], keys: ISSHKey[], s
 
 	// find original keys based on their prettified name and return fingerprints
 	specs.ssh_keys = pretty_keys.map(prettyKey => keys.find(k => prettifySSHKeyName(k) === prettyKey)!.fingerprint);
+
+	// enable features
+	features_raw.forEach(pFeatureName => {
+		const featureName = features[prettifiedFeatures.indexOf(pFeatureName)];
+		switch (featureName) {
+			case 'backups':
+				specs.backups = true;
+				break;
+			case 'ipv6':
+				specs.ipv6 = true;
+				break;
+			case 'private_networking':
+				specs.private_networking = true;
+				break;
+			case 'monitoring':
+				specs.monitoring = true;
+				break;
+		}
+	});
 
 	return specs;
 }
@@ -175,10 +218,23 @@ export default async function spinupDropletCommand(args: ICommandArgs) {
 		const dropletData = await digitalOcean.Droplet.get(droplet.id).toPromise();
 
 		const { networks }: any = dropletData;
-		const { v4 } = networks;
+		const { v4, v6 } = networks;
+
+		let hasv4 = false;
+		const usev6 = specs.ipv6 === true;
+		let hasv6 = false;
 
 		if (networks && Array.isArray(v4) && v4.length > 0) {
 			v4.forEach(netDetails => console.log(`${chalk.gray('IPv4 address')} ${netDetails.ip_address}`));
+			hasv4 = true;
+		}
+
+		if (usev6 && networks && Array.isArray(v6) && v6.length > 0) {
+			v6.forEach(netDetails => console.log(`${chalk.gray('IPv6 address')} ${netDetails.ip_address}`));
+			hasv6 = true;
+		}
+
+		if (hasv4 && (!usev6 || (usev6 && hasv6))) {
 			clearInterval(waitForDropletNetwork);
 		}
 	}, 15000);

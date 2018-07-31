@@ -1,6 +1,6 @@
 {
   "name": "dropletctl",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A convenient CLI tool to quickly spin up DigitalOcean droplets",
   "bin": {
     "dropletctl": "build/index.js"
