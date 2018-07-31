@@ -1,5 +1,7 @@
 # dropletctl
 
+<p align="center"><img src="/media/demo.gif?raw=true"/></p>
+
 > A convenient CLI tool to quickly spin up DigitalOcean droplets
 
 ## installation
