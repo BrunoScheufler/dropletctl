@@ -8,9 +8,9 @@
   "scripts": {
     "test": "yarn run build && yarn run lint",
     "build": "tsc --project .",
-	"lint": "tslint --project .",
-	"prepare": "yarn run test"
-},
+    "lint": "tslint --project .",
+    "prepare": "yarn run test"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/BrunoScheufler/dropletctl.git"
