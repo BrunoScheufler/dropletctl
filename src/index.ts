@@ -12,7 +12,7 @@ import spinupDropletCommand from './commands/spinup.command';
 // tslint:disable-next-line
 const packageInfo = require('../package.json');
 
-const actions = ['💧 Spin up droplet', '🔧 Configure dropletctl', '🚨 Show help menu'];
+const actions = ['💧   Spin up droplet', '🔧   Configure dropletctl', '🚨   Show help menu'];
 const actionSelectionQuestion: Question<{ action: string }> = {
 	type: 'list',
 	name: 'action',
