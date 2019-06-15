@@ -11,7 +11,6 @@
     "lint:code": "tslint --project .",
     "lint": "yarn lint:style && yarn lint:code",
     "watch": "tsc --project . --watch",
-    "prepare": "yarn build && yarn lint",
     "test": "echo \"Currently, there are no tests, this placeholder was added so the current step won't fail.\"",
     "semantic-release": "semantic-release"
   },
