@@ -2,6 +2,8 @@
 
 <p align="center"><img src="/media/demo.gif?raw=true"/></p>
 
+[![CircleCI](https://circleci.com/gh/BrunoScheufler/dropletctl.svg?style=svg)](https://circleci.com/gh/BrunoScheufler/dropletctl)
+
 > A convenient CLI tool to quickly spin up DigitalOcean droplets
 
 ## installation
