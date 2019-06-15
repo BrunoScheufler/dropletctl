@@ -1,0 +1,56 @@
+version: 2.1
+jobs:
+  test:
+    docker:
+      - image: 'circleci/node:latest'
+    steps:
+      - checkout
+      # install dependencies
+      - run:
+          name: install
+          command: yarn
+      # lint code
+      - run:
+          name: lint
+          command: yarn lint
+      # run tests
+      - run:
+          name: test
+          command: yarn test
+  release:
+    docker:
+      - image: 'circleci/node:latest'
+    steps:
+      - checkout
+      # install dependencies
+      - run:
+          name: install
+          command: yarn
+      # lint code
+      - run:
+          name: lint
+          command: yarn lint
+      # run tests
+      - run:
+          name: test
+          command: yarn test
+      # release
+      - run:
+          name: release
+          command: yarn semantic-release
+workflows:
+  version: 2
+  default-workflow:
+    jobs:
+      # run test job on every change except pushes to master branch
+      - test:
+          filters:
+            branches:
+              ignore:
+                - master
+      # run release job only for pushes to master
+      - release:
+          filters:
+            branches:
+              only:
+                - master

@@ -32,7 +32,7 @@ const handleError = (err: Error) => {
 
 (async () => {
 	process.on('uncaughtException', handleError);
-	process.on('unhandledRejection', handleError);
+	process.on('unhandledRejection', (err: any) => handleError(err));
 
 	const config = new ConfigStore(packageInfo.name);
 	const { action } = await inquirer.prompt([actionSelectionQuestion]);

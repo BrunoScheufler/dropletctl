@@ -1,5 +1,5 @@
 import { DigitalOcean } from 'dots-wrapper';
-import inquirer, { Question } from 'inquirer';
+import inquirer, { ListQuestion, CheckboxQuestion, InputQuestion } from 'inquirer';
 import { hri } from 'human-readable-ids';
 
 import { ICommandArgs } from '../util/interfaces';
@@ -62,7 +62,7 @@ async function selectRegion(digitalOcean: DigitalOcean) {
 		.map(r => r.name)
 		.sort((a, b) => a.localeCompare(b));
 
-	const selectRegionQuestion: Question<{ region: string }> = {
+	const selectRegionQuestion: ListQuestion<{ region: string }> = {
 		type: 'list',
 		name: 'region',
 		choices: availableRegionNames,
@@ -74,8 +74,8 @@ async function selectRegion(digitalOcean: DigitalOcean) {
 	return availableRegions.find(r => r.name === region);
 }
 
-async function selectSpecs(region: IRegion, images: IImage[], keys: ISSHKey[], snapshots: ISnapshot[]) {
-	const selectSizeQuestion = {
+async function selectSpecs(region: IRegion, images: IImage[], sshKeys: ISSHKey[], snapshots: ISnapshot[]) {
+	const selectSizeQuestion: ListQuestion<{ size: string }> = {
 		type: 'list',
 		choices: region.sizes.sort((a, b) => a.localeCompare(b)),
 		message: 'Select a droplet size',
@@ -84,17 +84,17 @@ async function selectSpecs(region: IRegion, images: IImage[], keys: ISSHKey[], s
 
 	const prettifiedImageNames = images.map(image => prettifyImageName(image));
 	const prettifiedSnapshotNames = snapshots.map(snapshot => prettifySnapshotName(snapshot));
-	const selectImageQuestion = {
+	const selectImageQuestion: ListQuestion<{ image_snapshot: string }> = {
 		type: 'list',
 		choices: [...prettifiedSnapshotNames, ...prettifiedImageNames],
 		name: 'image_snapshot',
 		message: 'Select an image/snapshot'
 	};
 
-	const selectKeysQuestion = {
+	const selectKeysQuestion: CheckboxQuestion<{ pretty_keys: string[] }> = {
 		type: 'checkbox',
 		name: 'pretty_keys',
-		choices: keys.map(key => prettifySSHKeyName(key)),
+		choices: sshKeys.map(key => prettifySSHKeyName(key)),
 		message: 'Select your SSH keys to be added to the droplet'
 	};
 
@@ -105,14 +105,14 @@ async function selectSpecs(region: IRegion, images: IImage[], keys: ISSHKey[], s
 		`Private networking ${chalk.gray('private_networking')}`,
 		`Monitoring ${chalk.gray('monitoring')}`
 	];
-	const selectFeaturesQuestion = {
+	const selectFeaturesQuestion: CheckboxQuestion<{ features_raw: string[] }> = {
 		type: 'checkbox',
 		name: 'features_raw',
 		choices: prettifiedFeatures,
 		message: 'Select additional droplet features'
 	};
 
-	const selectNameQuestion = {
+	const selectNameQuestion: InputQuestion<{ name: string }> = {
 		type: 'input',
 		name: 'name',
 		message: 'Choose a droplet name',
@@ -120,11 +120,6 @@ async function selectSpecs(region: IRegion, images: IImage[], keys: ISSHKey[], s
 	};
 
 	interface ISpecs {
-		// user input to be transformed into droplet details
-		image_snapshot: string;
-		pretty_keys: string[];
-		features_raw: string[];
-
 		// default droplet details
 		size: string;
 		image: string;
@@ -138,24 +133,25 @@ async function selectSpecs(region: IRegion, images: IImage[], keys: ISSHKey[], s
 		monitoring?: boolean;
 	}
 
-	const { pretty_keys, image_snapshot, features_raw, ...specs } = await inquirer.prompt<ISpecs>([
-		selectSizeQuestion,
-		selectImageQuestion,
-		selectKeysQuestion,
-		selectFeaturesQuestion,
-		selectNameQuestion
-	]);
+	const { size } = await inquirer.prompt([selectSizeQuestion]);
+	const { image_snapshot: imageSnapshot } = await inquirer.prompt([selectImageQuestion]);
+	const { pretty_keys: prettyKeys } = await inquirer.prompt([selectKeysQuestion]);
+	const { features_raw: featuresRaw } = await inquirer.prompt([selectFeaturesQuestion]);
+	const { name } = await inquirer.prompt([selectNameQuestion]);
 
-	// find and return original image slug or snapshot id from selected prettified name
-	specs.image = prettifiedSnapshotNames.includes(image_snapshot)
-		? snapshots[prettifiedSnapshotNames.indexOf(image_snapshot)].id
-		: images[prettifiedImageNames.indexOf(image_snapshot)].slug!;
+	const specs: ISpecs = {
+		size,
+		// find and return original image slug or snapshot id from selected prettified name
+		image: prettifiedSnapshotNames.includes(imageSnapshot)
+			? snapshots[prettifiedSnapshotNames.indexOf(imageSnapshot)].id
+			: images[prettifiedImageNames.indexOf(imageSnapshot)].slug!,
+		name,
+		// find original keys based on their prettified name and return fingerprints
+		ssh_keys: prettyKeys.map(prettyKey => sshKeys.find(k => prettifySSHKeyName(k) === prettyKey)!.fingerprint)
+	};
 
-	// find original keys based on their prettified name and return fingerprints
-	specs.ssh_keys = pretty_keys.map(prettyKey => keys.find(k => prettifySSHKeyName(k) === prettyKey)!.fingerprint);
-
-	// enable features
-	features_raw.forEach(pFeatureName => {
+	// enable selected features
+	featuresRaw.forEach(pFeatureName => {
 		const featureName = features[prettifiedFeatures.indexOf(pFeatureName)];
 		switch (featureName) {
 			case 'backups':
