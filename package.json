@@ -43,7 +43,7 @@
     "@types/node": "12.11.1",
     "@types/ora": "3.2.0",
     "prettier": "1.18.2",
-    "semantic-release": "15.13.24",
+    "semantic-release": "15.13.27",
     "tslint": "5.20.0",
     "typescript": "3.6.4"
   },
