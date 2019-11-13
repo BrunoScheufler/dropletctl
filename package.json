@@ -53,6 +53,6 @@
     "dots-wrapper": "2.6.0",
     "human-readable-ids": "1.0.4",
     "inquirer": "7.0.0",
-    "ora": "4.0.2"
+    "ora": "4.0.3"
   }
 }
