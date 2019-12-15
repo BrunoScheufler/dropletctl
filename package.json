@@ -52,7 +52,7 @@
     "configstore": "5.0.0",
     "dots-wrapper": "2.6.0",
     "human-readable-ids": "1.0.4",
-    "inquirer": "7.0.0",
+    "inquirer": "7.0.1",
     "ora": "4.0.3"
   }
 }
