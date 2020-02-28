@@ -45,7 +45,7 @@
     "prettier": "1.18.2",
     "semantic-release": "16.0.4",
     "tslint": "5.20.1",
-    "typescript": "3.8.2"
+    "typescript": "3.8.3"
   },
   "dependencies": {
     "chalk": "3.0.0",
