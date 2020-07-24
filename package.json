@@ -40,7 +40,7 @@
   "devDependencies": {
     "@types/configstore": "4.0.0",
     "@types/inquirer": "6.5.0",
-    "@types/node": "12.12.52",
+    "@types/node": "12.12.53",
     "@types/ora": "3.2.0",
     "prettier": "1.18.2",
     "semantic-release": "16.0.4",
