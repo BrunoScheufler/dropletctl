@@ -1333,10 +1333,10 @@ dotenv@^5.0.1:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-5.0.1.tgz#a5317459bd3d79ab88cff6e44057a6a3fbb1fcef"
   integrity sha512-4As8uPrjfwb7VXC+WnLCbXK7y+Ueb2B3zgNCePYfhxS1PYeaO1YTeplffTEcbfLhvFNGLAz90VvJs9yomG7bow==
 
-dots-wrapper@3.3.2:
-  version "3.3.2"
-  resolved "https://registry.yarnpkg.com/dots-wrapper/-/dots-wrapper-3.3.2.tgz#79e72d73a4f4136f82e103ef2004325fc3e43cbd"
-  integrity sha512-R6YWGCoTcYTjl+FgBgo2t/YopiWCs87MUFtLNTZUDrM5Knjxq0dKYcA7Q+T55fc+cVkUoJQ3O2Yi8V5Ri302xQ==
+dots-wrapper@3.3.3:
+  version "3.3.3"
+  resolved "https://registry.yarnpkg.com/dots-wrapper/-/dots-wrapper-3.3.3.tgz#62be1bd7625be80b7f4e3da9eb10097dd5622e6d"
+  integrity sha512-Oo+qQyTyoE8ZgVFZXmeHB7a6gDWm3evmo0065GowzQhN3iDApc3J+QVQCNeTACOVk/nKkqCTRGFabuV9sif7YA==
   dependencies:
     axios "^0.19.2"
 
