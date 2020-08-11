@@ -48,7 +48,7 @@
     "typescript": "3.9.7"
   },
   "dependencies": {
-    "chalk": "3.0.0",
+    "chalk": "4.1.0",
     "configstore": "5.0.1",
     "dots-wrapper": "3.3.3",
     "human-readable-ids": "1.0.4",
