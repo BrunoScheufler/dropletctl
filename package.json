@@ -39,7 +39,7 @@
   "homepage": "https://github.com/BrunoScheufler/dropletctl#readme",
   "devDependencies": {
     "@types/configstore": "4.0.0",
-    "@types/inquirer": "6.5.0",
+    "@types/inquirer": "7.3.1",
     "@types/node": "12.12.54",
     "@types/ora": "3.2.0",
     "prettier": "1.18.2",
@@ -52,7 +52,7 @@
     "configstore": "5.0.1",
     "dots-wrapper": "3.3.3",
     "human-readable-ids": "1.0.4",
-    "inquirer": "7.3.2",
+    "inquirer": "7.3.3",
     "ora": "4.1.1"
   }
 }
